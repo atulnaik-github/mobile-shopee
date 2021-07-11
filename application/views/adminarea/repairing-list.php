@@ -18,36 +18,33 @@
        <div class="col-md-12">
          <!-- general form elements -->
          <div class="box box-primary">
-           <div class="box-header with-border">
-           </div>
+           <br>
            <!-- /.box-header -->
            <!-- form start -->
-           <form role="form" action="<?= base_url('Adminarea/repairing-list'); ?>" method="post" enctype="multipart/form-data">
+           <form role="form" method="get" enctype="multipart/form-data">
              <div class="box-body">
                <div class="form-group row">
-                 <label class="col-sm-1 col-form-label">Customer Name</label>
-                 <div class="col-sm-4">
-                   <input type="text" class="form-control" name="cust_name">
-                 </div>
-                 <label class="col-sm-1 col-form-label">Status</label>
-                 <div class="col-sm-4">
-                   <input type="text" class="form-control" name="status">
-                 </div>
-               </div>
-               <div class="form-group row">
                  <label class="col-sm-1 col-form-label">From Date</label>
-                 <div class="col-sm-4">
+                 <div class="col-sm-3">
                    <input type="date" class="form-control" name="from_date">
                  </div>
                  <label class="col-sm-1 col-form-label">To Date</label>
-                 <div class="col-sm-4">
+                 <div class="col-sm-3">
                    <input type="date" class="form-control" name="to_date">
                  </div>
+                 <label class="col-sm-1 col-form-label">Status</label>
+                 <div class="col-sm-3">
+                   <select name="status" id="status" class="form-control">
+                     <option value="">Select Status</option>
+                     <option value="1">Pending</option>
+                     <option value="2">In-Process</option>
+                     <option value="3">Completed</option>
+                   </select>
+                 </div>
                </div>
-
              </div>
              <div class="box-footer">
-               <center><button type="submit" class="btn btn-primary">Search</button></center>
+               <button type="submit" class="btn btn-primary">Search</button>
              </div>
            </form>
          </div>
@@ -61,8 +58,8 @@
            <thead>
              <tr>
                <th width="5%">Sr</th>
-               <th>Customer Name</th>
                <th>Date</th>
+               <th>Customer Name</th>
                <th>Address</th>
                <th>Brand Name </th>
                <th>Mobile No </th>
@@ -75,25 +72,7 @@
              </tr>
            </thead>
            <tbody>
-             <?php foreach ($repairing as $key => $row) : ?>
-               <tr>
-                 <td><?= $key + 1; ?></td>
-                 <td><?= $row['cust_name']; ?></td>
-                 <td><?= $row['date']; ?></td>
-                 <td><?= $row['address']; ?></td>
-                 <td><?= $row['brand_name']; ?></td>
-                 <td><?= $row['mob_no']; ?></td>
-                 <td><?= $row['model']; ?></td>
-                 <td><?= $row['imei']; ?></td>
-                 <td><?= $row['fault_desc']; ?></td>
-                 <td><?= $row['amount']; ?></td>
-                 <td><?= $row['status']; ?></td>
-                 <td>
-                   <a href="<?= base_url() ?>edit-repair/<?= $row['id']; ?>" class="btn btn-sm btn-warning btn-xs"><i class="fa fa-pencil"></i></a>
-                   <a href="" class="btn btn-sm btn-danger btn-xs"><i class="fa fa-trash"></i></a>
-                 </td>
-               </tr>
-             <?php endforeach; ?>
+
            </tbody>
          </table>
        </div>
@@ -102,6 +81,16 @@
    </section>
  </div>
  <script type="text/javascript">
-   $("#example").dataTable();
+   $("#example").dataTable({
+     "serverSide": true,
+     "processing": true,
+     "order": [
+       [0, "desc"]
+     ],
+     "ajax": {
+       url: base_url + "get-repair-list-data?" + "<?= $_SERVER['QUERY_STRING'] ?>",
+       type: 'POST'
+     },
+   });
  </script>
  <!-- /.content-wrapper -->

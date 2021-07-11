@@ -84,6 +84,8 @@ $route['get-staff-list-data'] = 'Datatable/get_staff_table';
 $route['repair-action'] = 'adminarea/repair_action';
 $route['edit-repair/(:num)'] = 'adminarea/edit_repair/$1';
 $route['delete-repair/(:num)'] = 'adminarea/delete_repair/$1';
+$route['get-repair-list-data'] = 'Datatable/get_repair_table';
+
 //supplier
 $route['edit-supplier/(:num)'] = 'adminarea/edit_supplier/$1';
 $route['delete-supplier/(:num)'] = 'adminarea/delete_supplier/$1';

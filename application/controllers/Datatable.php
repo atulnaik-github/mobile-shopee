@@ -340,4 +340,127 @@ class Datatable extends MY_Controller
             return $this->db->get()->result();
         }
     }
+
+    public function get_repair_table()
+    {
+        if (!$this->input->is_ajax_request()) {
+            exit('No direct script access allowed');
+        } else {
+            $draw       = intval($this->input->post("draw"));
+            $questions  = $this->getRepairDataTableData($is_get_total_record = FALSE);
+            $data       = array();
+            $start = intval($this->input->post("start"));
+            foreach ($questions as $index => $rows) {
+                if ($rows->status == 1) {
+                    $status = "<span class='btn btn-xs btn-info'>Pending</span>";
+                } else if ($rows->status == 2) {
+                    $status = "<span class='btn btn-xs btn-warning'>In-Process</span>";
+                } else if ($rows->status == 3) {
+                    $status = "<span class='btn btn-xs btn-success'>Completed</span>";
+                } else {
+                    $status = '';
+                }
+                $data[] = array(
+                    ($start + 1),
+                    date('d M, Y', strtotime($rows->created_at)),
+                    $rows->cust_name,
+                    $rows->address,
+                    $rows->brand,
+                    $rows->mob_no,
+                    $rows->model,
+                    $rows->imei,
+                    $rows->fault_desc,
+                    $rows->amount,
+                    $status,
+                    '<a href="' . base_url('edit-staff/' . $rows->id) . '"><button type="button" class="btn btn-xs btn-warning" data-toggle="tootltip" title="Edit"><i class="fa fa-pencil"></i></button></a>
+                    <a href="' . base_url('delete-staff/' . $rows->id) . '"><button type="button" class="btn btn-xs btn-danger" data-toggle="tootltip" title="Delete"><i class="fa fa-trash"></i></button></a>',
+                );
+                $start++;
+            }
+            $total_employees = $this->getRepairDataTableData(TRUE);
+            $output = array(
+                "draw" => $draw,
+                "recordsTotal" => $total_employees,
+                "recordsFiltered" => $total_employees,
+                "data" => $data
+            );
+            echo json_encode($output);
+            exit();
+        }
+    }
+
+    public function getRepairDataTableData($is_get_total_record = FALSE)
+    {
+        $start = intval($this->input->post("start"));
+        $length = intval($this->input->post("length"));
+        $order = $this->input->post("order");
+        $search = $this->input->post("search");
+        $search = $search['value'];
+        $col = 0;
+        $dir = "";
+        if (!empty($order)) {
+            foreach ($order as $o) {
+                $col = $o['column'];
+                $dir = $o['dir'];
+            }
+        }
+
+        if ($dir != "asc" && $dir != "desc") {
+            $dir = "asc";
+        }
+
+        $valid_columns = array(
+            0 => 'R.id',
+            1 => 'R.cust_name',
+            2 => 'R.created_at',
+            3 => 'R.address',
+            4 => 'B.brand_name',
+            5 => 'R.mob_no',
+            5 => 'R.model',
+            5 => 'R.imei',
+            5 => 'R.fault_desc',
+            5 => 'R.amount',
+            5 => 'R.status',
+        );
+
+        if (!isset($valid_columns[$col])) {
+            $order = null;
+        } else {
+            $order = $valid_columns[$col];
+        }
+
+        if ($order != null) {
+            // $this->db->order_by($order, $dir);
+            $this->db->order_by('id', 'asc');
+        }
+
+        if (!empty($search)) {
+            $this->db->group_start();
+            $this->db->where("R.cust_name LIKE '%$search%'");
+            $this->db->or_where("B.brand_name LIKE '%$search%'");
+            $this->db->group_end();
+        }
+
+        if ($this->input->get("status") && !empty($this->input->get("status"))) {
+            $this->db->where('R.status', $this->input->get("status"));
+        }
+
+        if ($this->input->get("from_date") && !empty($this->input->get("from_date"))) {
+            $this->db->where('DATE(R.created_at)>=', date("Y-m-d", strtotime($this->input->get("from_date"))));
+        }
+
+        if ($this->input->get("to_date") && !empty($this->input->get("to_date"))) {
+            $this->db->where('DATE(R.created_at)<=', date("Y-m-d", strtotime($this->input->get("to_date"))));
+        }
+
+        $this->db->select('R.id,R.cust_name,R.created_at,R.address,B.brand_name as brand,R.mob_no,R.model,R.imei,R.fault_desc,R.amount,R.status');
+        $this->db->from(TBLREPAIR . ' R');
+        $this->db->join(TBLBRAND . ' B', 'B.id = R.brand_name', 'left');
+        if ($is_get_total_record == TRUE) {
+            return $this->db->get()->num_rows();
+        } else {
+            $this->db->limit($length, $start);
+            return $this->db->get()->result();
+        }
+    }
 }
