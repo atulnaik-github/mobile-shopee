@@ -1,5 +1,5 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 /*
 | -------------------------------------------------------------------------
@@ -66,3 +66,30 @@ $route['reset-password'] = 'forgot/reset_password';
 $route['dashboard'] = 'staffarea/dashboard';
 $route['change-password'] = 'staffarea/change_password';
 
+// login
+$route['login-action'] = 'Login/login_action';
+$route['logout-action'] = 'Login/logout_action';
+// brands
+$route['master/add-brands'] = 'adminarea/add_brands';
+$route['master/edit-brands/(:num)'] = 'adminarea/edit_brands/$1';
+$route['master/delete-brands/(:num)'] = 'adminarea/delete_brands/$1';
+
+// staff
+$route['add-staff'] = 'adminarea/add_staff';
+$route['edit-staff/(:num)'] = 'adminarea/edit_staff/$1';
+$route['delete-staff/(:num)'] = 'adminarea/delete_staff/$1';
+$route['get-staff-list-data'] = 'Datatable/get_staff_table';
+
+// repair
+$route['repair-action'] = 'adminarea/repair_action';
+$route['edit-repair/(:num)'] = 'adminarea/edit_repair/$1';
+$route['delete-repair/(:num)'] = 'adminarea/delete_repair/$1';
+//supplier
+$route['edit-supplier/(:num)'] = 'adminarea/edit_supplier/$1';
+$route['delete-supplier/(:num)'] = 'adminarea/delete_supplier/$1';
+$route['get-supplier-list-data'] = 'Datatable/get_supplier_table';
+
+// product
+$route['edit-product/(:num)'] = 'adminarea/edit_product/$1';
+$route['delete-product/(:num)'] = 'adminarea/delete_product/$1';
+$route['get-product-list-data'] = 'Datatable/get_product_list_data';

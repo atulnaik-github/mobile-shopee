@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>AdminLTE 2 | Log in</title>
+  <title>Login</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.7 -->
@@ -27,62 +28,95 @@
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
+
 <body class="hold-transition login-page">
-<div class="login-box">
-  <div class="login-logo">
-    <a href="#!"><b>L</b>ogin</a>
-  </div>
-  <!-- /.login-logo -->
-  <div class="login-box-body">
-    <p class="login-box-msg">Sign in to start your session</p>
+  <div class="login-box">
+    <div class="login-logo">
+      <a href="#!"><b>L</b>ogin</a>
+    </div>
+    <!-- /.login-logo -->
+    <div class="login-box-body">
+      <p class="login-box-msg">Sign in to start your session</p>
 
-    <form action="" method="post">
-      <div class="form-group has-feedback">
-        <input type="email" class="form-control" placeholder="Email">
-        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-      </div>
-      <div class="form-group has-feedback">
-        <input type="password" class="form-control" placeholder="Password">
-        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-      </div>
-      <div class="row">
-        <div class="col-xs-8">
-          <div class="checkbox icheck">
-            <label>
-              <input type="checkbox"> Remember Me
-            </label>
+      <form action="<?= base_url() ?>login-action" method="post">
+        <div class="form-group has-feedback">
+          <input type="text" class="form-control" placeholder="Email" name="email" required>
+          <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+        </div>
+        <div class="form-group has-feedback">
+          <input type="password" class="form-control" placeholder="Password" name="password" required>
+          <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+        </div>
+        <div class="row">
+          <!-- <div class="col-xs-8">
+            <div class="checkbox icheck">
+              <label>
+                <input type="checkbox"> Remember Me
+              </label>
+            </div>
+          </div> -->
+          <!-- /.col -->
+          <div class="col-xs-4">
+            <button type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button>
           </div>
+          <!-- /.col -->
         </div>
-        <!-- /.col -->
-        <div class="col-xs-4">
-          <a href="<?= site_url('system-logs'); ?>" type="submit" class="btn btn-primary btn-block btn-flat">Sign In</a>
+      </form>
+      <!-- /.social-auth-links -->
+      <br>
+      <a href="<?= site_url('forgot-password'); ?>">I forgot my password</a><br>
+    </div>
+    <!-- /.login-box-body -->
+  </div>
+  <!-- /.login-box -->
+  <div class="msg_div">
+    <?php
+    $msg = '';
+    $error_class = 'alert-success';
+    $hint_text = 'Success';
+    if ($this->session->flashdata("success") != "") {
+      $msg = $this->session->flashdata("success");
+      $error_class = 'alert-success';
+      $hint_text = 'Success';
+    } else if ($this->session->flashdata("error") != "" || (validation_errors() != "")) {
+      $msg = ($this->session->flashdata("error") ? $this->session->flashdata("error") : validation_errors());
+      $error_class = 'alert-danger';
+      $hint_text = 'Error';
+    }
+    ?>
+    <?php if (!empty($msg)) { ?>
+      <div class="err-msg2" style="position: absolute; right: 5px !important; bottom: 35px;z-index: 999; <?php echo (!empty($msg) ? 'display:block;' : 'display:none;'); ?>" id="alert">
+        <div class="alert <?php echo $error_class; ?> alert-dismissible">
+          <a href="#" class="close" data-dismiss="alert" aria-label="close" style="text-decoration: none;position: absolute;top: 1px;right: 6px;opacity: 0.4;">&times;</a>
+          <strong><?php echo $hint_text; ?> !</strong> <?php echo $msg; ?>
         </div>
-        <!-- /.col -->
       </div>
-    </form>
-    <!-- /.social-auth-links -->
-    <br>
-    <a href="<?= site_url('forgot-password'); ?>">I forgot my password</a><br>
+
+    <?php } ?>
 
   </div>
-  <!-- /.login-box-body -->
-</div>
-<!-- /.login-box -->
 
-<!-- jQuery 3 -->
-<script src="<?= site_url('assets/commonarea/'); ?>bower_components/jquery/dist/jquery.min.js"></script>
-<!-- Bootstrap 3.3.7 -->
-<script src="<?= site_url('assets/commonarea/'); ?>bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<!-- iCheck -->
-<script src="<?= site_url('assets/commonarea/'); ?>plugins/iCheck/icheck.min.js"></script>
-<script>
-  $(function () {
-    $('input').iCheck({
-      checkboxClass: 'icheckbox_square-blue',
-      radioClass: 'iradio_square-blue',
-      increaseArea: '20%' /* optional */
+
+  <!-- jQuery 3 -->
+  <script src="<?= site_url('assets/commonarea/'); ?>bower_components/jquery/dist/jquery.min.js"></script>
+  <!-- Bootstrap 3.3.7 -->
+  <script src="<?= site_url('assets/commonarea/'); ?>bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+  <!-- iCheck -->
+  <script src="<?= site_url('assets/commonarea/'); ?>plugins/iCheck/icheck.min.js"></script>
+  <script>
+    $(function() {
+      $('input').iCheck({
+        checkboxClass: 'icheckbox_square-blue',
+        radioClass: 'iradio_square-blue',
+        increaseArea: '20%' /* optional */
+      });
     });
-  });
-</script>
+  </script>
+  <script>
+    $("#alert").fadeTo(5000, 500).slideUp(500, function() {
+      $("#alert").slideUp(5000);
+    });
+  </script>
 </body>
+
 </html>

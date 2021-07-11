@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -28,11 +29,11 @@
   <!-- bootstrap wysihtml5 - text editor -->
   <link rel="stylesheet" href="<?= site_url('assets/commonarea/'); ?>plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
   <!-- DataTables -->
-     <link rel="stylesheet" href="<?= site_url('assets/commonarea/'); ?>bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
-<script src="<?= site_url('assets/commonarea/'); ?>bower_components/jquery/dist/jquery.min.js"></script>
+  <link rel="stylesheet" href="<?= site_url('assets/commonarea/'); ?>bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+  <script src="<?= site_url('assets/commonarea/'); ?>bower_components/jquery/dist/jquery.min.js"></script>
   <!-- DataTables -->
-  <script src="<?= site_url('assets/commonarea/');?>bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
-  <script src="<?= site_url('assets/commonarea/');?>bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+  <script src="<?= site_url('assets/commonarea/'); ?>bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+  <script src="<?= site_url('assets/commonarea/'); ?>bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -44,5 +45,9 @@
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
+<script type="text/javascript">
+  let base_url = '<?php echo base_url(); ?>';
+</script>
+
 <body class="hold-transition skin-blue sidebar-mini">
-<div class="wrapper">
+  <div class="wrapper">

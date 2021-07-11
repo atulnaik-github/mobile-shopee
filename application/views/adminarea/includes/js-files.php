@@ -39,4 +39,5 @@
 <!-- AdminLTE for demo purposes -->
 <script src="<?= site_url('assets/commonarea/'); ?>dist/js/demo.js"></script>
 </body>
+
 </html>
