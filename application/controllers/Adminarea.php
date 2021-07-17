@@ -68,8 +68,9 @@ class Adminarea extends MY_Controller
 	}
 	public function sale()
 	{
-		//$this->adminBackend('adminarea/add-sale');
-		$data['sale'] = $this->um->getData(TBLSALE);
+		$data['brands'] = $this->Md_database->getData(TBLBRAND, '*');
+		$data['product'] = $this->Md_database->getData(TBLPRODUCT, '*');
+		$data['sale'] = $this->Md_database->getData(TBLSALE, '*');
 		$this->adminBackend('adminarea/add-sale', $data, true);
 	}
 	public function sale_list()
@@ -363,12 +364,51 @@ class Adminarea extends MY_Controller
 	public function add_sale()
 	{
 		$data = $this->input->post();
+		$txt_id = $data['txt_id'];
 		unset($data['submit']);
-		$check = $this->um->insertData(TBLSALE, $data);
-		if (!empty($check)) {
-			redirect('Adminarea/sale', 'refresh', 301);
+		unset($data['txt_id']);
+
+		if (!empty($txt_id)) {
+			$data['updated_by'] = $this->session->userdata('UID');
+			$check = $this->Md_database->updateData(TBLSALE, $data, array('id' => $txt_id));
+			$msg = 'updated';
 		} else {
-			redirect('Adminarea/sale', 'refresh', 301);
+			$data['created_by'] = $this->session->userdata('UID');
+			$check = $this->Md_database->insertData(TBLSALE, $data);
+			$msg = 'added';
+		}
+		if (!empty($check)) {
+			$this->session->set_flashdata('success', "Sales details $msg successfully");
+		} else {
+			$this->session->set_flashdata('error', 'Unable to save details');
+		}
+		redirect($this->agent->referrer(), 'refresh', 301);
+	}
+
+	public function edit_sale($id)
+	{
+		$data['brands'] = $this->Md_database->getData(TBLBRAND, '*');
+		$data['product'] = $this->Md_database->getData(TBLPRODUCT, '*');
+		$data['sale'] = $this->Md_database->getData(TBLSALE, '*');
+		$data['edit_data'] = $this->Md_database->getData(TBLSALE, '*', array('id' => $id));
+		if (!empty($data['edit_data'])) {
+			$this->adminBackend('adminarea/add-sale', $data, true);
+		} else {
+			$this->session->set_flashdata('error', 'Something went wrong');
+			redirect($this->agent->referrer(), 'refresh', 301);
+		}
+	}
+
+	public function delete_sale($id)
+	{
+		if (!empty($id)) {
+			$check = $this->Md_database->deleteData(TBLSALE, array('id' => $id));
+			if (!empty($check)) {
+				$this->session->set_flashdata('success', 'Sale details deleted successfully');
+			} else {
+				$this->session->set_flashdata('error', 'Unable to delete');
+			}
+			redirect($this->agent->referrer(), 'refresh', 301);
 		}
 	}
 
