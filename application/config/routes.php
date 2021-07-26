@@ -99,3 +99,4 @@ $route['get-product-list-data'] = 'Datatable/get_product_list_data';
 // sale 
 $route['edit-sale/(:num)'] = 'adminarea/edit_sale/$1';
 $route['delete-sale/(:num)'] = 'adminarea/delete_sale/$1';
+$route['get-sale-list-data'] = 'Datatable/get_sale_list_data';

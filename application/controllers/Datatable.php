@@ -463,4 +463,120 @@ class Datatable extends MY_Controller
             return $this->db->get()->result();
         }
     }
+
+    public function get_sale_list_data()
+    {
+        if (!$this->input->is_ajax_request()) {
+            exit('No direct script access allowed');
+        } else {
+            $draw       = intval($this->input->post("draw"));
+            $questions  = $this->getSaleDataTableData($is_get_total_record = FALSE);
+            $data       = array();
+            $start = intval($this->input->post("start"));
+            foreach ($questions as $index => $rows) {
+
+                $data[] = array(
+                    ($start + 1),
+                    $rows->cust_name,
+                    date('d-m-Y h:i A', strtotime($rows->created_at)),
+                    $rows->mob_no,
+                    $rows->brand_name,
+                    $rows->ram,
+                    $rows->inte_stor,
+                    $rows->bat_cap,
+                    $rows->que,
+                    $rows->price,
+                    $rows->pur_price,
+                    '<a href="' . base_url('edit-sale/' . $rows->id) . '"><button type="button" class="btn btn-xs btn-warning" data-toggle="tootltip" title="Edit"><i class="fa fa-pencil"></i></button></a>
+                    <a href="' . base_url('delete-sale/' . $rows->id) . '"><button type="button" class="btn btn-xs btn-danger" data-toggle="tootltip" title="Delete"><i class="fa fa-trash"></i></button></a>',
+                );
+                $start++;
+            }
+            $total_employees = $this->getSaleDataTableData(TRUE);
+            $output = array(
+                "draw" => $draw,
+                "recordsTotal" => $total_employees,
+                "recordsFiltered" => $total_employees,
+                "data" => $data
+            );
+            echo json_encode($output);
+            exit();
+        }
+    }
+
+    public function getSaleDataTableData($is_get_total_record = FALSE)
+    {
+        $start = intval($this->input->post("start"));
+        $length = intval($this->input->post("length"));
+        $order = $this->input->post("order");
+        $search = $this->input->post("search");
+        $search = $search['value'];
+        $col = 0;
+        $dir = "";
+        if (!empty($order)) {
+            foreach ($order as $o) {
+                $col = $o['column'];
+                $dir = $o['dir'];
+            }
+        }
+
+        if ($dir != "asc" && $dir != "desc") {
+            $dir = "asc";
+        }
+
+        // $valid_columns = array(
+        //     0 => 'R.id',
+        //     1 => 'R.cust_name',
+        //     2 => 'R.created_at',
+        //     3 => 'R.address',
+        //     4 => 'B.brand_name',
+        //     5 => 'R.mob_no',
+        //     5 => 'R.model',
+        //     5 => 'R.imei',
+        //     5 => 'R.fault_desc',
+        //     5 => 'R.amount',
+        //     5 => 'R.status',
+        // );
+
+        if (!isset($valid_columns[$col])) {
+            $order = null;
+        } else {
+            $order = $valid_columns[$col];
+        }
+
+        if ($order != null) {
+            // $this->db->order_by($order, $dir);
+            $this->db->order_by('id', 'asc');
+        }
+
+        if (!empty($search)) {
+            $this->db->group_start();
+            $this->db->where("S.cust_name LIKE '%$search%'");
+            $this->db->or_where("B.brand_name LIKE '%$search%'");
+            $this->db->group_end();
+        }
+
+        if ($this->input->get("cust_name") && !empty($this->input->get("cust_name"))) {
+            $this->db->where("S.cust_name LIKE '%" . $this->input->get('cust_name') . "%'");
+        }
+
+        if ($this->input->get("from_date") && !empty($this->input->get("from_date"))) {
+            $this->db->where('DATE(S.created_at)>=', date("Y-m-d", strtotime($this->input->get("from_date"))));
+        }
+
+        if ($this->input->get("to_date") && !empty($this->input->get("to_date"))) {
+            $this->db->where('DATE(S.created_at)<=', date("Y-m-d", strtotime($this->input->get("to_date"))));
+        }
+
+        $this->db->select('S.id,S.cust_name,S.created_at,S.ram,S.inte_stor,S.bat_cap,S.que,S.price,S.pur_price,S.mob_no,P.product_name,B.brand_name');
+        $this->db->from(TBLSALE . ' S');
+        $this->db->join(TBLPRODUCT . ' P', 'P.id = S.product_name', 'left');
+        $this->db->join(TBLBRAND . ' B', 'B.id = S.brand_name', 'left');
+        if ($is_get_total_record == TRUE) {
+            return $this->db->get()->num_rows();
+        } else {
+            $this->db->limit($length, $start);
+            return $this->db->get()->result();
+        }
+    }
 }
